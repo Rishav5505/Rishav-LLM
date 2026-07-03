@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-brand-purple: #740968;
+  --color-brand-purple-hover: #5e0753;
+  --color-brand-purple-light: #9c158d;
+  --color-dark-bg: #0b0f19;
+  --color-dark-sidebar: #0f1322;
+  --color-dark-surface: #171d30;
+  --color-dark-border: #222b45;
+  --color-dark-hover: #1e263d;
+}
+
+/* Base custom styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(116, 9, 104, 0.45) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(116, 9, 104, 0.45);
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(116, 9, 104, 0.7);
+}
+
+body {
+  background-color: #0b0f19;
+  color: #f3f4f6;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Float Glow Animation for background mesh gradients */
+@keyframes float-glow {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(40px, -60px) scale(1.15);
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-float-slow {
+  animation: float-glow 22s infinite ease-in-out;
+}
+
+.animate-float-delayed {
+  animation: float-glow 28s infinite ease-in-out;
+  animation-delay: 4s;
+}
+
+/* Message slide-up fade-in transition */
+@keyframes message-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-message {
+  animation: message-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Glassmorphism custom styling utilities */
+.glass-panel {
+  background: rgba(23, 29, 48, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(23, 29, 48, 0.65);
+  border-color: rgba(116, 9, 104, 0.4);
+  box-shadow: 0 0 25px rgba(116, 9, 104, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Markdown rendering helper classes */
+.prose-custom pre {
+  background-color: #0f1322;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  border: 1px solid #222b45;
+  margin: 0.5rem 0;
+}
+
+.prose-custom code {
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+  font-size: 0.875rem;
+  background-color: #171d30;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.prose-custom p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.prose-custom p:last-child {
+  margin-bottom: 0;
+}
+
+.prose-custom ul, .prose-custom ol {
+  margin-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  list-style-position: outside;
+}
+
+.prose-custom ul {
+  list-style-type: disc;
+}
+
+.prose-custom ol {
+  list-style-type: decimal;
+}
+
+.prose-custom li {
+  margin-bottom: 0.25rem;
+}
