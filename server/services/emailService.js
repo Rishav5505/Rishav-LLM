@@ -19,7 +19,7 @@ const sendMail = async ({ toEmail, toName, subject, htmlContent }) => {
     // Create SMTP transporter configured for Brevo
     const transporter = nodemailer.createTransport({
       host: 'smtp-relay.brevo.com',
-      port: 587,
+      port: 2525, // Using port 2525 to bypass Render free tier outbound port 587/465 blocks
       secure: false, // true for 465, false for other ports (using STARTTLS)
       auth: {
         user: smtpUser,
