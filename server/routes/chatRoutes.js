@@ -6,7 +6,8 @@ import {
   sendMessage,
   deleteChat,
   updateChatTitle,
-  clearChatMessages
+  clearChatMessages,
+  enhancePrompt
 } from '../controllers/chatController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
@@ -19,6 +20,7 @@ router.use(apiLimiter);
 
 router.post('/new', createChat);
 router.post('/message', sendMessage);
+router.post('/enhance-prompt', enhancePrompt);
 router.get('/history', getChats);
 router.get('/history/:id', getChatById);
 router.delete('/:id', deleteChat);

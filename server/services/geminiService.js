@@ -22,7 +22,9 @@ export const generateChatResponse = async (
   prompt,
   historyMessages = [],
   systemInstruction = '',
-  modelName = 'gemini-2.5-flash'
+  modelName = 'gemini-2.5-flash',
+  temperature,
+  maxOutputTokens
 ) => {
   let retries = 3;
   let delay = 1000;
@@ -54,8 +56,8 @@ Where {URL_ENCODED_PROMPT} is a descriptive prompt in English detailing what to 
       const chat = model.startChat({
         history: formattedHistory,
         generationConfig: {
-          maxOutputTokens: 2048,
-          temperature: 0.7,
+          maxOutputTokens: maxOutputTokens || 2048,
+          temperature: temperature !== undefined ? Number(temperature) : 0.7,
         },
       });
 

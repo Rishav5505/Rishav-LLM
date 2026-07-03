@@ -36,10 +36,12 @@ export const chatAPI = {
   createChat: (title, model) => api.post('/chat/new', { title, model }),
   getChats: () => api.get('/chat/history'),
   getChatDetails: (id) => api.get(`/chat/history/${id}`),
-  sendMessage: (chatId, content, model) => api.post('/chat/message', { chatId, content, model }),
+  sendMessage: (chatId, content, model, temperature, maxOutputTokens) => 
+    api.post('/chat/message', { chatId, content, model, temperature, maxOutputTokens }),
   deleteChat: (id) => api.delete(`/chat/${id}`),
   updateTitle: (id, title) => api.put(`/chat/${id}/title`, { title }),
   clearChat: (id) => api.post(`/chat/${id}/clear`),
+  enhancePrompt: (prompt) => api.post('/chat/enhance-prompt', { prompt }),
 };
 
 export const pdfAPI = {

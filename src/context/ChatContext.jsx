@@ -13,6 +13,8 @@ export const ChatProvider = ({ children }) => {
   const [chatsLoading, setChatsLoading] = useState(false);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState('gemini-2.5-flash');
+  const [temperature, setTemperature] = useState(0.7);
+  const [maxOutputTokens, setMaxOutputTokens] = useState(2048);
 
   // Load chat listing when user logs in
   useEffect(() => {
@@ -101,7 +103,13 @@ export const ChatProvider = ({ children }) => {
     setMessages((prevMessages) => [...prevMessages, tempUserMessage, tempAssistantMessage]);
 
     try {
-      const response = await chatAPI.sendMessage(currentChat._id, content, selectedModel);
+      const response = await chatAPI.sendMessage(
+        currentChat._id,
+        content,
+        selectedModel,
+        temperature,
+        maxOutputTokens
+      );
       
       if (response.data.success) {
         const { userMessage, assistantMessage, chatTitle } = response.data;
@@ -246,6 +254,10 @@ export const ChatProvider = ({ children }) => {
         uploadPdfFile,
         changeSelectedModel,
         setCurrentChat,
+        temperature,
+        setTemperature,
+        maxOutputTokens,
+        setMaxOutputTokens,
       }}
     >
       {children}

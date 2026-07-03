@@ -92,7 +92,7 @@ export const getChatById = async (req, res) => {
 // @access  Private
 export const sendMessage = async (req, res) => {
   try {
-    const { chatId, content, model: modelOverride } = req.body;
+    const { chatId, content, model: modelOverride, temperature, maxOutputTokens } = req.body;
 
     if (!chatId || !content) {
       return res.status(400).json({ success: false, message: 'chatId and message content are required' });
@@ -167,7 +167,9 @@ export const sendMessage = async (req, res) => {
       geminiPrompt,
       historyMessages,
       systemPrompt,
-      chat.model
+      chat.model,
+      temperature,
+      maxOutputTokens
     );
 
     // 5. Store user message in DB (store original clean prompt, but log the pdfContext sent if any)
@@ -287,12 +289,43 @@ export const clearChatMessages = async (req, res) => {
     // Also delete documents (PDFs) associated since history is cleared
     await Document.deleteMany({ chatId: chat._id });
 
+    res.status(200).json({ success: true, message: 'Chat deleted successfully' });
+  } catch (error) {
+    console.error('Delete chat error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Enhance user prompt using Gemini
+// @route   POST /api/chat/enhance-prompt
+// @access  Private
+export const enhancePrompt = async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    if (!prompt || !prompt.trim()) {
+      return res.status(400).json({ success: false, message: 'Prompt is required' });
+    }
+
+    const enhancementInstruction = 
+      'You are a Prompt Engineering expert. ' +
+      'Take the user prompt provided and rewrite it to be highly detailed, clear, professional, and optimized for an AI assistant. ' +
+      'Provide ONLY the enhanced prompt. Do not add any introduction, explanations, quotes, or markdown formats.';
+
+    const enhanced = await generateChatResponse(
+      prompt,
+      [],
+      enhancementInstruction,
+      'gemini-2.5-flash',
+      0.3, // lower temperature for prompt focus
+      1024
+    );
+
     res.status(200).json({
       success: true,
-      message: 'Chat messages cleared successfully',
+      enhancedPrompt: enhanced.trim()
     });
   } catch (error) {
-    console.error('Clear chat messages error:', error);
+    console.error('Enhance prompt error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };

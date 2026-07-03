@@ -1,11 +1,14 @@
-import React from 'react';
-import { Menu, FileDown, Trash2, Cpu, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Menu, FileDown, Trash2, Cpu, Sparkles, Sliders } from 'lucide-react';
 import { useChat } from '../context/ChatContext';
 
 const Navbar = ({ toggleSidebar }) => {
   const { 
-    currentChat, messages, selectedModel, changeSelectedModel, clearChatSession 
+    currentChat, messages, selectedModel, changeSelectedModel, clearChatSession,
+    temperature, setTemperature, maxOutputTokens, setMaxOutputTokens
   } = useChat();
+
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleClearChat = async () => {
     if (!currentChat) return;
@@ -149,6 +152,72 @@ const Navbar = ({ toggleSidebar }) => {
                 gemini-2.5-pro
               </option>
             </select>
+          </div>
+
+          {/* Model Settings Panel Toggle */}
+          <div className="relative">
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              className={`flex items-center justify-center p-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+                showSettings 
+                  ? 'bg-brand-purple/10 border-brand-purple text-brand-purple-light shadow-[0_0_15px_rgba(116,9,104,0.25)]' 
+                  : 'bg-dark-surface hover:bg-dark-hover border-dark-border text-gray-300'
+              }`}
+              title="Generation Parameters"
+            >
+              <Sliders size={14} />
+            </button>
+
+            {showSettings && (
+              <div className="absolute right-0 mt-2.5 w-64 glass-panel rounded-2xl p-4.5 shadow-2xl border border-white/10 z-50 text-left select-none">
+                <h4 className="text-xs font-extrabold text-white mb-4 tracking-wider uppercase flex items-center gap-1.5">
+                  <Sliders size={12} className="text-brand-purple-light" />
+                  Model Parameters
+                </h4>
+                
+                {/* Temperature Slider */}
+                <div className="space-y-1.5 mb-4.5">
+                  <div className="flex justify-between text-[11px] font-bold text-gray-400">
+                    <span>Temperature (Creativity)</span>
+                    <span className="text-brand-purple-light font-mono">{temperature}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.1"
+                    max="1.0"
+                    step="0.05"
+                    value={temperature}
+                    onChange={(e) => setTemperature(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-dark-bg rounded-lg appearance-none cursor-pointer accent-brand-purple"
+                  />
+                  <div className="flex justify-between text-[9px] text-gray-500 font-medium">
+                    <span>Precise</span>
+                    <span>Creative</span>
+                  </div>
+                </div>
+
+                {/* Max Length Slider */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-[11px] font-bold text-gray-400">
+                    <span>Max Response Length</span>
+                    <span className="text-indigo-400 font-mono">{maxOutputTokens}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="256"
+                    max="2048"
+                    step="64"
+                    value={maxOutputTokens}
+                    onChange={(e) => setMaxOutputTokens(parseInt(e.target.value))}
+                    className="w-full h-1 bg-dark-bg rounded-lg appearance-none cursor-pointer accent-brand-purple"
+                  />
+                  <div className="flex justify-between text-[9px] text-gray-500 font-medium">
+                    <span>Short</span>
+                    <span>Long</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Export PDF Button */}
