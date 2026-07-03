@@ -44,8 +44,20 @@ const Profile = () => {
 
         {/* Header Branding info */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand-purple/15 border border-brand-purple/40 text-brand-purple-light text-3xl font-extrabold select-none uppercase mb-4 shadow-[0_0_20px_rgba(116,9,104,0.2)] animate-pulse">
-            {user?.name ? user.name[0] : <User size={30} />}
+          <div className="relative group mb-4 select-none">
+            <div className="absolute inset-0 rounded-3xl bg-brand-purple/30 blur-md pointer-events-none group-hover:bg-brand-purple/55 transition-all" />
+            <img 
+              src="/rishav.jpg" 
+              alt="Profile Avatar" 
+              className="relative h-24 w-24 object-cover rounded-3xl border-2 border-brand-purple-light shadow-[0_0_25px_rgba(156,21,141,0.35)] hover:scale-105 transition-transform duration-300"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+            <div className="hidden h-24 w-24 items-center justify-center rounded-3xl bg-brand-purple/15 border border-brand-purple/40 text-brand-purple-light text-3xl font-extrabold uppercase shadow-[0_0_20px_rgba(116,9,104,0.2)]">
+              {user?.name ? user.name[0] : <User size={30} />}
+            </div>
           </div>
           <h2 className="text-2xl font-bold text-white leading-tight">{user?.name || 'Explorer'}</h2>
           <p className="text-xs text-gray-400 mt-1">Manage your credentials and view statistics</p>

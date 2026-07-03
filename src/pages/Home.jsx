@@ -21,7 +21,7 @@ const Home = () => {
       <div className="absolute inset-0 cyber-grid pointer-events-none opacity-80" />
 
       {/* Navigation Header */}
-      <nav className="relative z-10 max-w-7xl mx-auto w-full flex items-center justify-between px-6 py-5 shrink-0 select-none">
+      <nav className="relative z-10 max-w-7xl mx-auto w-full flex items-center justify-between px-6 py-3 shrink-0 select-none">
         <div className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-tr from-brand-purple to-indigo-900 border border-brand-purple/40 shadow-[0_0_20px_rgba(116,9,104,0.35)] animate-pulse">
             <Sparkles size={18} className="text-white" />
@@ -50,53 +50,57 @@ const Home = () => {
       </nav>
 
       {/* Hero Section */}
-      <main className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-20 flex-1 flex flex-col items-center justify-center text-center animate-elastic">
+      <main className="relative z-10 max-w-5xl mx-auto px-6 py-1 md:py-2 flex-1 flex flex-col items-center justify-center text-center animate-elastic">
         
-        {/* Concentric Rotating Holographic AI Centerpiece Orb */}
-        <div className="relative w-40 h-40 mb-8 mt-2 flex items-center justify-center select-none">
+        {/* Concentric Rotating Holographic AI Centerpiece Orb with Rishav Photo */}
+        <div className="relative w-28 h-28 mb-4 mt-0 flex items-center justify-center select-none">
           {/* Outer dashed rotation ring */}
           <div className="absolute inset-0 rounded-full border border-dashed border-brand-purple-light/40 animate-rotate-cw" />
           {/* Middle dotted rotation ring */}
-          <div className="absolute inset-4.5 rounded-full border-2 border-dotted border-indigo-400/30 animate-rotate-ccw" />
-          {/* Inner glowing core orb */}
-          <div className="absolute inset-9 rounded-full border border-brand-purple/50 glow-orb flex items-center justify-center bg-dark-sidebar/90 backdrop-blur-md">
-            <Sparkles size={28} className="text-brand-purple-light animate-pulse" />
+          <div className="absolute inset-1.5 rounded-full border-2 border-dotted border-indigo-400/25 animate-rotate-ccw" />
+          {/* Inner glowing core orb containing photo */}
+          <div className="absolute inset-3 rounded-full border border-brand-purple/50 glow-orb overflow-hidden flex items-center justify-center bg-dark-sidebar/90 backdrop-blur-md">
+            <img 
+              src="/rishav.jpg" 
+              alt="Rishav AI Avatar" 
+              className="w-full h-full object-cover rounded-full"
+            />
           </div>
         </div>
 
         {/* Glow pill badge */}
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/35 text-brand-purple-light text-[11px] font-semibold mb-6 select-none animate-pulse">
-          <Cpu size={12} />
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-brand-purple/10 border border-brand-purple/35 text-brand-purple-light text-[10px] font-semibold mb-2 select-none animate-pulse">
+          <Cpu size={10} />
           Powered by Google Gemini 2.5 Flash
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-[1.12]">
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-2 leading-[1.12]">
           Your Intelligent Conversational <br />
           <span className="bg-gradient-to-r from-brand-purple-light via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(156,21,141,0.45)]">
             AI Assistant
           </span>
         </h1>
 
-        <p className="text-base sm:text-lg text-gray-400 max-w-2xl mb-12 leading-relaxed">
+        <p className="text-sm sm:text-base text-gray-400 max-w-2xl mb-3 leading-relaxed">
           Rishav AI is a production-ready conversational chatbot platform. Instantly solve code queries, 
           query uploaded PDF materials with contextual memory retrieval, and customize system instruction prompts.
         </p>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-20 select-none">
+        <div className="flex flex-col sm:flex-row gap-4 mb-4 select-none">
           <div className="relative">
             <span className="absolute inset-0 rounded-xl bg-brand-purple/40 animate-ping pointer-events-none" />
             <Link
               to="/register"
-              className="relative w-full sm:w-auto bg-brand-purple hover:bg-brand-purple-hover text-white font-bold py-4 px-8 rounded-xl transition-all cursor-pointer text-center text-base shadow-[0_0_30px_rgba(116,9,104,0.45)] hover:scale-[1.03] flex items-center justify-center gap-2"
+              className="relative w-full sm:w-auto bg-brand-purple hover:bg-brand-purple-hover text-white font-bold py-3 px-7 rounded-xl transition-all cursor-pointer text-center text-sm shadow-[0_0_30px_rgba(116,9,104,0.45)] hover:scale-[1.03] flex items-center justify-center gap-2"
             >
-              <Wand2 size={18} />
+              <Wand2 size={16} />
               Create Free Account
             </Link>
           </div>
           <Link
             to="/login"
-            className="bg-dark-surface/40 hover:bg-dark-hover/60 border border-dark-border/80 text-gray-300 hover:text-white font-bold py-4 px-8 rounded-xl transition-colors cursor-pointer text-center text-base"
+            className="bg-dark-surface/40 hover:bg-dark-hover/60 border border-dark-border/80 text-gray-300 hover:text-white font-bold py-3 px-7 rounded-xl transition-colors cursor-pointer text-center text-sm"
           >
             Try Chat Demo
           </Link>
