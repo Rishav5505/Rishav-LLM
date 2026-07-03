@@ -55,9 +55,9 @@ const Register = () => {
   return (
     <div className="relative min-h-screen bg-dark-bg text-gray-200 flex items-center justify-center px-4 overflow-hidden">
       
-      {/* Background floating mesh glow effects */}
-      <div className="absolute top-[-25%] left-[-25%] w-[65%] h-[65%] rounded-full bg-brand-purple/15 blur-[140px] pointer-events-none animate-float-slow" />
-      <div className="absolute bottom-[-25%] right-[-25%] w-[65%] h-[65%] rounded-full bg-indigo-950/25 blur-[140px] pointer-events-none animate-float-delayed" />
+      {/* Siri-Style Morphing Aura Backgrounds */}
+      <div className="absolute top-[-20%] left-[-20%] w-[65%] h-[65%] bg-brand-purple/10 blur-[130px] pointer-events-none animate-aura-1" />
+      <div className="absolute bottom-[-20%] right-[-20%] w-[65%] h-[65%] bg-indigo-950/25 blur-[130px] pointer-events-none animate-aura-2" />
 
       {/* Glassmorphic Register Card Panel */}
       <div className="relative z-10 w-full max-w-md glass-panel rounded-3xl p-8 shadow-2xl border border-white/5">

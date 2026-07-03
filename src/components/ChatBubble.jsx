@@ -4,8 +4,10 @@ import { renderMarkdown } from '../utils/markdown';
 import Loader from './Loader';
 
 const ChatBubble = ({ message }) => {
-  const { role, content, loading, error } = message;
+  const { role, content, loading, error, createdAt } = message;
   const isUser = role === 'user';
+  const isAssistant = !isUser;
+  const isNewMessage = isAssistant && (!createdAt || (Date.now() - new Date(createdAt).getTime()) < 3000);
   const [copied, setCopied] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -92,7 +94,7 @@ const ChatBubble = ({ message }) => {
                 <span>{content}</span>
               </div>
             ) : (
-              <div className="prose-custom prose prose-invert max-w-none">
+              <div className={`prose-custom prose prose-invert max-w-none ${isNewMessage ? 'blinking-cursor' : ''}`}>
                 {renderMarkdown(content)}
               </div>
             )}

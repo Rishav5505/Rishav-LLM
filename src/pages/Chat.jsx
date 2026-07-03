@@ -293,7 +293,7 @@ const Chat = () => {
                 </div>
               )}
 
-              <div className="relative flex items-end w-full border border-dark-border rounded-2xl bg-dark-surface focus-within:border-brand-purple transition-colors p-2 shadow-2xl">
+              <div className="relative flex items-end w-full border border-dark-border rounded-2xl bg-dark-surface glow-border-active transition-colors p-2 shadow-2xl">
                 
                 {/* PDF toggle side-drawer button (mobile) */}
                 <button
@@ -362,14 +362,19 @@ const Chat = () => {
                 </button>
 
                 {/* Send Prompt button */}
-                <button
-                  type="submit"
-                  disabled={!inputText.trim()}
-                  className="p-2 rounded-xl bg-brand-purple hover:bg-brand-purple-hover text-white transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                  title="Send Message"
-                >
-                  <Send size={18} />
-                </button>
+                <div className="relative">
+                  {inputText.trim() && (
+                    <span className="absolute inset-0 rounded-xl bg-brand-purple/40 animate-ping pointer-events-none" />
+                  )}
+                  <button
+                    type="submit"
+                    disabled={!inputText.trim()}
+                    className="relative p-2 rounded-xl bg-brand-purple hover:bg-brand-purple-hover text-white transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(116,9,104,0.3)] hover:scale-[1.05] active:scale-95 flex items-center justify-center"
+                    title="Send Message"
+                  >
+                    <Send size={18} />
+                  </button>
+                </div>
               </div>
 
               <div className="text-[10px] text-center text-gray-500 mt-2">

@@ -13,9 +13,9 @@ const Home = () => {
   return (
     <div className="relative min-h-screen bg-dark-bg text-gray-200 overflow-hidden flex flex-col justify-between">
       
-      {/* Radiant Floating Mesh Background Circles */}
-      <div className="absolute top-[-15%] left-[-15%] w-[60%] h-[60%] rounded-full bg-brand-purple/15 blur-[140px] pointer-events-none animate-float-slow" />
-      <div className="absolute bottom-[-15%] right-[-15%] w-[60%] h-[60%] rounded-full bg-indigo-950/30 blur-[140px] pointer-events-none animate-float-delayed" />
+      {/* Siri-Style Morphing Aura Backgrounds */}
+      <div className="absolute top-[-20%] left-[-20%] w-[65%] h-[65%] bg-brand-purple/10 blur-[130px] pointer-events-none animate-aura-1" />
+      <div className="absolute bottom-[-20%] right-[-20%] w-[65%] h-[65%] bg-indigo-950/25 blur-[130px] pointer-events-none animate-aura-2" />
 
       {/* Navigation Header */}
       <nav className="relative z-10 max-w-7xl mx-auto w-full flex items-center justify-between px-6 py-5 shrink-0 select-none">
