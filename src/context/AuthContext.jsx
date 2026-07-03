@@ -50,7 +50,8 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Login error in AuthContext:', error);
       const message = error.response?.data?.message || 'Login failed. Please check your credentials.';
-      return { success: false, message };
+      const isNotVerified = error.response?.data?.isNotVerified || false;
+      return { success: false, message, isNotVerified };
     }
   };
 
@@ -59,10 +60,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authAPI.register(name, email, password);
       if (response.data.success) {
-        const { token, user: userData } = response.data;
-        localStorage.setItem('token', token);
-        setUser(userData);
-        return { success: true };
+        return { 
+          success: true, 
+          message: response.data.message || 'Registration successful! Please check your email to verify.' 
+        };
       }
     } catch (error) {
       console.error('Registration error in AuthContext:', error);

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
-import { Sparkles, Mail, Lock, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
+import { Sparkles, Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { authAPI } from '../services/api';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 
 const Login = () => {
@@ -11,6 +12,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [notVerified, setNotVerified] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState('');
 
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
@@ -19,6 +22,8 @@ const Login = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (error) setError('');
+    if (notVerified) setNotVerified(false);
+    if (resendSuccess) setResendSuccess('');
   };
 
   const handleSubmit = async (e) => {
@@ -32,6 +37,8 @@ const Login = () => {
 
     setLoading(true);
     setError('');
+    setNotVerified(false);
+    setResendSuccess('');
 
     try {
       const result = await login(email, password);
@@ -39,9 +46,30 @@ const Login = () => {
         navigate('/dashboard');
       } else {
         setError(result.message);
+        if (result.isNotVerified) {
+          setNotVerified(true);
+        }
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendLink = async () => {
+    if (!formData.email) return;
+    setLoading(true);
+    setError('');
+    setResendSuccess('');
+    try {
+      const response = await authAPI.resendVerification(formData.email);
+      if (response.data.success) {
+        setResendSuccess(response.data.message || 'Verification link resent successfully!');
+        setNotVerified(false);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to resend verification email.');
     } finally {
       setLoading(false);
     }
@@ -53,9 +81,10 @@ const Login = () => {
       {/* Siri-Style Morphing Aura Backgrounds */}
       <div className="absolute top-[-20%] left-[-20%] w-[65%] h-[65%] bg-brand-purple/10 blur-[130px] pointer-events-none animate-aura-1" />
       <div className="absolute bottom-[-20%] right-[-20%] w-[65%] h-[65%] bg-indigo-950/25 blur-[130px] pointer-events-none animate-aura-2" />
+      <div className="absolute inset-0 cyber-grid pointer-events-none opacity-80" />
 
       {/* Glassmorphic Login Card Panel */}
-      <div className="relative z-10 w-full max-w-md glass-panel rounded-3xl p-8 shadow-2xl border border-white/5">
+      <div className="relative z-10 w-full max-w-md glass-panel rounded-3xl p-8 shadow-2xl border border-white/5 animate-elastic">
         
         {/* Branding header */}
         <div className="flex flex-col items-center mb-8 select-none">
@@ -71,11 +100,30 @@ const Login = () => {
           <p className="text-sm text-gray-400 mt-1">Sign in to resume your conversations</p>
         </div>
 
+        {/* Resend link success banner */}
+        {resendSuccess && (
+          <div className="flex items-center gap-2.5 bg-green-950/20 text-green-400 border border-green-500/30 rounded-xl p-4 mb-6 text-sm">
+            <CheckCircle2 size={16} className="shrink-0" />
+            <span>{resendSuccess}</span>
+          </div>
+        )}
+
         {/* Validation Errors */}
         {error && (
-          <div className="flex items-center gap-2.5 bg-red-950/20 text-red-400 border border-red-500/30 rounded-xl p-4 mb-6 text-sm">
-            <AlertCircle size={16} className="shrink-0" />
-            <span>{error}</span>
+          <div className="flex flex-col gap-2.5 bg-red-950/20 text-red-400 border border-red-500/30 rounded-xl p-4 mb-6 text-sm">
+            <div className="flex items-center gap-2">
+              <AlertCircle size={16} className="shrink-0" />
+              <span>{error}</span>
+            </div>
+            {notVerified && (
+              <button
+                type="button"
+                onClick={handleResendLink}
+                className="text-left text-xs font-bold text-brand-purple-light hover:underline mt-1 cursor-pointer"
+              >
+                Click here to resend the verification link.
+              </button>
+            )}
           </div>
         )}
 
@@ -104,6 +152,12 @@ const Login = () => {
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-xs font-semibold text-gray-400">Password</label>
+              <Link
+                to="/forgot-password"
+                className="text-xs font-semibold text-brand-purple-light hover:underline cursor-pointer"
+              >
+                Forgot password?
+              </Link>
             </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">

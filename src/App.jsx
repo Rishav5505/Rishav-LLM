@@ -7,6 +7,8 @@ import { ChatProvider } from './context/ChatContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import VerifyEmail from './pages/VerifyEmail';
+import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import Chat from './pages/Chat';
 import Profile from './pages/Profile';
@@ -73,6 +75,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verify-email/:token" element={<VerifyEmail />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
             {/* Authenticated Dashboard / Chat Interface Pages */}
             <Route

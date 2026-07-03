@@ -30,6 +30,10 @@ export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   googleLogin: (idToken) => api.post('/auth/google', { idToken }),
   getMe: () => api.get('/auth/me'),
+  verifyEmail: (token) => api.get(`/auth/verify-email/${token}`),
+  resendVerification: (email) => api.post('/auth/resend-verification', { email }),
+  forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+  resetPassword: (email, otp, newPassword) => api.post('/auth/reset-password', { email, otp, newPassword }),
 };
 
 export const chatAPI = {
