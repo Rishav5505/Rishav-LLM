@@ -20,6 +20,9 @@ connectDB();
 
 const app = express();
 
+// Trust proxy for rate limiting (needed for deployments behind reverse proxies like Render)
+app.set('trust proxy', 1);
+
 // CORS configuration - Allow all origins in development, restrict in production
 app.use(cors({
   origin: '*', // For demo/dev purposes, allow all. In production, specify frontend URL.
