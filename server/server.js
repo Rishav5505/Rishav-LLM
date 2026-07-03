@@ -36,6 +36,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root/Welcome health check route for deployments (Render, etc.)
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Welcome to Rishav AI API Service' });
+});
+
 // API Health Check Route
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Rishav AI backend is running smoothly' });
