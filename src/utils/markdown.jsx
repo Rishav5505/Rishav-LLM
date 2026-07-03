@@ -86,16 +86,36 @@ export const renderMarkdown = (text) => {
   });
 };
 
-/**
- * Format inline tokens like **bold** and `code`
- */
 const formatInlineText = (text) => {
   if (!text) return '';
   
-  // Split on bold or inline code patterns
-  const tokens = text.split(/(\*\*.*?\*\*|`.*?`)/g);
+  // Split on bold, inline code, or markdown image patterns
+  const tokens = text.split(/(\*\*.*?\*\*|`.*?`|!\[.*?\]\(.*?\))/g);
 
   return tokens.map((token, idx) => {
+    // Image matches
+    if (token.startsWith('![') && token.endsWith(')')) {
+      const match = token.match(/!\[(.*?)\]\((.*?)\)/);
+      if (match) {
+        const alt = match[1];
+        const url = match[2];
+        return (
+          <div key={`img-${idx}`} className="my-4 relative rounded-2xl overflow-hidden border border-dark-border bg-[#0f1322]/80 max-w-lg group shadow-lg">
+            <img
+              src={url}
+              alt={alt}
+              loading="lazy"
+              className="w-full object-contain max-h-[380px] transition-transform duration-300 group-hover:scale-[1.01]"
+            />
+            {alt && (
+              <div className="px-4 py-2.5 bg-dark-sidebar border-t border-dark-border text-xs text-gray-400 select-none font-medium">
+                {alt}
+              </div>
+            )}
+          </div>
+        );
+      }
+    }
     // Bold matches
     if (token.startsWith('**') && token.endsWith('**')) {
       return (

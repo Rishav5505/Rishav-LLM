@@ -31,10 +31,15 @@ export const generateChatResponse = async (
     try {
       const genAI = getGenAIClient();
       
+      // Configure special system instruction rules for image generation requests
+      const imageInstruction = `\n\n[IMAGE GENERATION RULE]: If the user asks you to create, draw, generate, or show a picture/image/photo/painting of something, you must respond with a Markdown image syntax referencing the Pollinations AI generator:
+![Image Description](https://image.pollinations.ai/prompt/{URL_ENCODED_PROMPT}?width=1024&height=1024&nologo=true)
+Where {URL_ENCODED_PROMPT} is a descriptive prompt in English detailing what to draw, URL-encoded (with spaces replaced by %20, etc.). Never state that you are a text model. Always act as if you can generate it yourself using this format.`;
+
       // Load model with system instruction configuration
       const model = genAI.getGenerativeModel({
         model: modelName,
-        systemInstruction: systemInstruction || 'You are Rishav AI, a highly intelligent assistant.',
+        systemInstruction: (systemInstruction || 'You are Rishav AI, a highly intelligent assistant.') + imageInstruction,
       });
 
       // Format database messages to Gemini history structure
