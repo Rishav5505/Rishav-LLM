@@ -1,52 +1,44 @@
+import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 dotenv.config();
 
 /**
- * Dispatch transactional emails utilizing the Brevo v3 Transactional Email API.
- * Uses native fetch for modern, dependency-free HTTP requests.
+ * Dispatch transactional emails utilizing the Brevo SMTP server via nodemailer.
  */
 const sendMail = async ({ toEmail, toName, subject, htmlContent }) => {
-  const apiKey = process.env.BREVO_API_KEY;
+  const smtpPassword = process.env.BREVO_API_KEY;
+  const smtpUser = process.env.BREVO_SMTP_USER || process.env.SENDER_EMAIL || 'rishavkumar33372@gmail.com';
   const senderEmail = process.env.SENDER_EMAIL || 'rishavkumar33372@gmail.com';
 
-  if (!apiKey) {
-    console.error('Email Dispatch Failed: BREVO_API_KEY is not defined in server/.env');
+  if (!smtpPassword) {
+    console.error('Email Dispatch Failed: BREVO_API_KEY (SMTP Password) is not defined in server/.env');
     return false;
   }
 
   try {
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        'accept': 'application/json',
-        'api-key': apiKey,
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        sender: {
-          name: 'Rishav AI',
-          email: senderEmail
-        },
-        to: [
-          {
-            email: toEmail,
-            name: toName || toEmail
-          }
-        ],
-        subject,
-        htmlContent
-      })
+    // Create SMTP transporter configured for Brevo
+    const transporter = nodemailer.createTransport({
+      host: 'smtp-relay.brevo.com',
+      port: 587,
+      secure: false, // true for 465, false for other ports (using STARTTLS)
+      auth: {
+        user: smtpUser,
+        pass: smtpPassword
+      }
     });
 
-    const result = await response.json();
-    if (!response.ok) {
-      console.error('Brevo API Error Response:', result);
-      return false;
-    }
+    const mailOptions = {
+      from: `"Rishav AI" <${senderEmail}>`,
+      to: toEmail,
+      subject,
+      html: htmlContent
+    };
 
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully via SMTP! Message ID:', info.messageId);
     return true;
   } catch (error) {
-    console.error('Brevo Email Dispatch Exception:', error);
+    console.error('Brevo SMTP Email Dispatch Exception:', error);
     return false;
   }
 };
