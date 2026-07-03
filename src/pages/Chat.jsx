@@ -56,7 +56,7 @@ const Chat = () => {
     }
   };
 
-  // Mic speech recognition logic
+  // Mic speech recognition logic (ChatGPT style: continuous + real-time interim results)
   const handleVoiceInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     
@@ -75,9 +75,13 @@ const Chat = () => {
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      // Use system language (auto-detect English/Hindi/local dialect accents)
+      recognition.lang = navigator.language || 'en-US';
+
+      let accumulatedFinal = '';
+      const baseText = inputText ? `${inputText.trim()} ` : '';
 
       recognition.onstart = () => {
         setIsListening(true);
@@ -93,10 +97,22 @@ const Chat = () => {
       };
 
       recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        if (transcript) {
-          setInputText((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        let interimTranscript = '';
+        let newFinal = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            newFinal += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
         }
+
+        accumulatedFinal += newFinal;
+        
+        // Real-time text injection
+        setInputText(baseText + accumulatedFinal + interimTranscript);
       };
 
       recognitionRef.current = recognition;
