@@ -1,0 +1,24 @@
+{
+  "short_name": "Rishav AI",
+  "name": "Rishav AI Chatbot",
+  "description": "Premium Gemini-powered personal AI chat assistant",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/rishav.jpg",
+      "type": "image/jpeg",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/"
+}
