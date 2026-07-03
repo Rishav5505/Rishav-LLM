@@ -10,9 +10,9 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/rishav.jpg",
-      "type": "image/jpeg",
-      "sizes": "192x192 512x512"
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "start_url": "/",
