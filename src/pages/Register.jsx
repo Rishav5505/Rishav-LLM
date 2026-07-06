@@ -3,7 +3,7 @@ import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { Sparkles, User, Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import GoogleLoginButton from '../components/GoogleLoginButton';
-import CursorGlow from '../components/CursorGlow';
+import MarketeamBackground from '../components/MarketeamBackground';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -57,16 +57,10 @@ const Register = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-dark-bg text-gray-200 flex items-center justify-center px-4 overflow-hidden">
-      <CursorGlow />
+    <MarketeamBackground showLeftHero={false} isFormOverlay={true}>
       
-      {/* Siri-Style Morphing Aura Backgrounds */}
-      <div className="absolute top-[-20%] left-[-20%] w-[65%] h-[65%] bg-brand-purple/10 blur-[130px] pointer-events-none animate-aura-1" />
-      <div className="absolute bottom-[-20%] right-[-20%] w-[65%] h-[65%] bg-indigo-950/25 blur-[130px] pointer-events-none animate-aura-2" />
-      <div className="absolute inset-0 cyber-grid pointer-events-none opacity-80" />
-
       {/* Glassmorphic Register Card Panel */}
-      <div className="relative z-10 w-full max-w-md glass-panel rounded-3xl p-8 shadow-2xl border border-white/5 animate-elastic">
+      <div className="relative z-10 w-full max-w-md glass-panel rounded-3xl p-8 shadow-2xl border border-white/5 animate-elastic bg-black/45 backdrop-blur-md text-white">
         
         {success ? (
           <div className="text-center select-none">
@@ -108,9 +102,10 @@ const Register = () => {
 
             {/* Register Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
+              
               {/* Full Name input */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400">Full Name</label>
+              <div className="flex flex-col gap-1.5 text-left">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Full Name</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
                     <User size={16} />
@@ -118,18 +113,18 @@ const Register = () => {
                   <input
                     type="text"
                     name="name"
-                    required
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Rishav Dev"
-                    className="w-full bg-dark-bg/60 border border-dark-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple/30 transition-all placeholder:text-gray-600"
+                    className="w-full bg-dark-surface/40 hover:bg-dark-hover/60 border border-dark-border/80 text-white rounded-xl py-3 pl-11 pr-4 text-sm outline-none focus:border-brand-purple/70 transition-colors"
+                    required
                   />
                 </div>
               </div>
 
               {/* Email address input */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400">Email Address</label>
+              <div className="flex flex-col gap-1.5 text-left">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Email Address</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
                     <Mail size={16} />
@@ -137,18 +132,18 @@ const Register = () => {
                   <input
                     type="email"
                     name="email"
-                    required
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="you@example.com"
-                    className="w-full bg-dark-bg/60 border border-dark-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple/30 transition-all placeholder:text-gray-600"
+                    className="w-full bg-dark-surface/40 hover:bg-dark-hover/60 border border-dark-border/80 text-white rounded-xl py-3 pl-11 pr-4 text-sm outline-none focus:border-brand-purple/70 transition-colors"
+                    required
                   />
                 </div>
               </div>
 
               {/* Password input */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400">Password</label>
+              <div className="flex flex-col gap-1.5 text-left">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Password</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
                     <Lock size={16} />
@@ -156,11 +151,11 @@ const Register = () => {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
-                    required
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
-                    className="w-full bg-dark-bg/60 border border-dark-border rounded-xl pl-10 pr-10 py-2.5 text-sm text-white focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple/30 transition-all placeholder:text-gray-600"
+                    placeholder="••••••••"
+                    className="w-full bg-dark-surface/40 hover:bg-dark-hover/60 border border-dark-border/80 text-white rounded-xl py-3 pl-11 pr-12 text-sm outline-none focus:border-brand-purple/70 transition-colors"
+                    required
                   />
                   <button
                     type="button"
@@ -176,7 +171,7 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 bg-brand-purple hover:bg-brand-purple-hover disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all cursor-pointer shadow-[0_0_20px_rgba(116,9,104,0.3)] mt-3 hover:scale-[1.01] active:scale-[0.99]"
+                className="w-full flex items-center justify-center gap-2 bg-brand-purple hover:bg-brand-purple-hover disabled:opacity-50 text-white font-bold py-3.5 rounded-xl transition-all cursor-pointer shadow-[0_0_20px_rgba(116,9,104,0.3)] mt-2 hover:scale-[1.01] active:scale-[0.99]"
               >
                 {loading ? (
                   <>
@@ -198,7 +193,7 @@ const Register = () => {
             <GoogleLoginButton />
 
             {/* Footer Redirect */}
-            <div className="text-center text-sm text-gray-400 mt-6 select-none">
+            <div className="text-center text-sm text-gray-400 mt-8 select-none">
               Already have an account?{' '}
               <Link to="/login" className="text-brand-purple-light font-semibold hover:underline">
                 Sign In Here
@@ -208,7 +203,7 @@ const Register = () => {
         )}
 
       </div>
-    </div>
+    </MarketeamBackground>
   );
 };
 

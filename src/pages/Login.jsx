@@ -4,7 +4,7 @@ import { Sparkles, Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 }
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
 import GoogleLoginButton from '../components/GoogleLoginButton';
-import CursorGlow from '../components/CursorGlow';
+import MarketeamBackground from '../components/MarketeamBackground';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -77,16 +77,10 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-dark-bg text-gray-200 flex items-center justify-center px-4 overflow-hidden">
-      <CursorGlow />
+    <MarketeamBackground showLeftHero={false} isFormOverlay={true}>
       
-      {/* Siri-Style Morphing Aura Backgrounds */}
-      <div className="absolute top-[-20%] left-[-20%] w-[65%] h-[65%] bg-brand-purple/10 blur-[130px] pointer-events-none animate-aura-1" />
-      <div className="absolute bottom-[-20%] right-[-20%] w-[65%] h-[65%] bg-indigo-950/25 blur-[130px] pointer-events-none animate-aura-2" />
-      <div className="absolute inset-0 cyber-grid pointer-events-none opacity-80" />
-
       {/* Glassmorphic Login Card Panel */}
-      <div className="relative z-10 w-full max-w-md glass-panel rounded-3xl p-8 shadow-2xl border border-white/5 animate-elastic">
+      <div className="relative z-10 w-full max-w-md glass-panel rounded-3xl p-8 shadow-2xl border border-white/5 animate-elastic bg-black/45 backdrop-blur-md text-white">
         
         {/* Branding header */}
         <div className="flex flex-col items-center mb-8 select-none">
@@ -119,60 +113,61 @@ const Login = () => {
             </div>
             {notVerified && (
               <button
-                type="button"
                 onClick={handleResendLink}
-                className="text-left text-xs font-bold text-brand-purple-light hover:underline mt-1 cursor-pointer"
+                disabled={loading}
+                className="text-left text-xs text-brand-purple-light hover:underline font-semibold mt-1 cursor-pointer disabled:opacity-50"
               >
-                Click here to resend the verification link.
+                Resend verification email?
               </button>
             )}
           </div>
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email input */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-400">Email Address</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          
+          {/* Email field */}
+          <div className="flex flex-col gap-1.5 text-left">
+            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Email Address</label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-500 pointer-events-none">
                 <Mail size={16} />
-              </div>
+              </span>
               <input
                 type="email"
                 name="email"
-                required
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className="w-full bg-dark-bg/60 border border-dark-border rounded-xl pl-10 pr-4 py-3.5 text-sm text-white focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple/30 transition-all placeholder:text-gray-600"
+                className="w-full bg-dark-surface/40 hover:bg-dark-hover/60 border border-dark-border/80 text-white rounded-xl py-3 pl-11 pr-4 text-sm outline-none focus:border-brand-purple/70 transition-colors"
+                required
               />
             </div>
           </div>
 
-          {/* Password input */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-gray-400">Password</label>
+          {/* Password field */}
+          <div className="flex flex-col gap-1.5 text-left">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Password</label>
               <Link
                 to="/forgot-password"
-                className="text-xs font-semibold text-brand-purple-light hover:underline cursor-pointer"
+                className="text-xs text-brand-purple-light hover:underline font-semibold"
               >
                 Forgot password?
               </Link>
             </div>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-500 pointer-events-none">
                 <Lock size={16} />
-              </div>
+              </span>
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                required
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
-                className="w-full bg-dark-bg/60 border border-dark-border rounded-xl pl-10 pr-10 py-3.5 text-sm text-white focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple/30 transition-all placeholder:text-gray-600"
+                placeholder="••••••••"
+                className="w-full bg-dark-surface/40 hover:bg-dark-hover/60 border border-dark-border/80 text-white rounded-xl py-3 pl-11 pr-12 text-sm outline-none focus:border-brand-purple/70 transition-colors"
+                required
               />
               <button
                 type="button"
@@ -218,7 +213,7 @@ const Login = () => {
         </div>
 
       </div>
-    </div>
+    </MarketeamBackground>
   );
 };
 

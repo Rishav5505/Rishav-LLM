@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        urbanist: ['Urbanist', 'sans-serif'],
+      },
       colors: {
         'brand-purple': '#740968',
         'brand-purple-hover': '#5e0753',
