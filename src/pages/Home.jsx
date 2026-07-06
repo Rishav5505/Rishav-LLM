@@ -21,33 +21,35 @@ const Home = () => {
       <div className="absolute inset-0 cyber-grid pointer-events-none opacity-80" />
 
       {/* Navigation Header */}
-      <nav className="relative z-10 max-w-7xl mx-auto w-full flex items-center justify-between px-4 sm:px-6 py-3 shrink-0 select-none">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-tr from-brand-purple to-indigo-900 border border-brand-purple/40 shadow-[0_0_20px_rgba(116,9,104,0.35)] animate-pulse">
-            <Sparkles size={18} className="text-white" />
+      <header className="sticky top-0 z-50 w-full border-b border-dark-border/40 bg-dark-bg/60 backdrop-blur-md select-none shrink-0">
+        <nav className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3.5">
+          <div className="flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-tr from-brand-purple to-indigo-900 border border-brand-purple/40 shadow-[0_0_20px_rgba(116,9,104,0.35)] animate-pulse">
+              <Sparkles size={18} className="text-white" />
+            </div>
+            <span className="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              Rishav AI
+            </span>
           </div>
-          <span className="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            Rishav AI
-          </span>
-        </div>
-        <div className="flex items-center gap-3 sm:gap-4">
-          <Link
-            to="/login"
-            className="text-xs sm:text-sm font-semibold hover:text-white transition-colors cursor-pointer"
-          >
-            Sign In
-          </Link>
-          <div className="relative">
-            <span className="absolute inset-0 rounded-xl bg-brand-purple/35 animate-ping pointer-events-none" />
+          <div className="flex items-center gap-3 sm:gap-4">
             <Link
-              to="/register"
-              className="relative bg-brand-purple hover:bg-brand-purple-hover text-white text-xs sm:text-sm font-bold py-2 px-3.5 sm:py-2.5 sm:px-5 rounded-xl transition-all cursor-pointer shadow-[0_0_25px_rgba(116,9,104,0.35)] hover:scale-[1.02] flex items-center gap-1"
+              to="/login"
+              className="text-xs sm:text-sm font-semibold hover:text-white transition-colors cursor-pointer"
             >
-              Get Started
+              Sign In
             </Link>
+            <div className="relative">
+              <span className="absolute inset-0 rounded-xl bg-brand-purple/35 animate-ping pointer-events-none" />
+              <Link
+                to="/register"
+                className="relative bg-brand-purple hover:bg-brand-purple-hover text-white text-xs sm:text-sm font-bold py-2 px-3.5 sm:py-2.5 sm:px-5 rounded-xl transition-all cursor-pointer shadow-[0_0_25px_rgba(116,9,104,0.35)] hover:scale-[1.02] flex items-center gap-1"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       {/* Hero Section */}
       <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-2 md:py-4 flex-1 flex flex-col items-center justify-center text-center animate-elastic">

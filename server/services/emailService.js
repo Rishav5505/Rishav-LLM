@@ -49,6 +49,16 @@ const sendMail = async ({ toEmail, toName, subject, htmlContent }) => {
 export const sendVerificationEmail = async (toEmail, name, token, clientUrl) => {
   const url = `${clientUrl}/verify-email/${token}`;
   
+  if (process.env.NODE_ENV === 'development' || !process.env.BREVO_API_KEY) {
+    console.log('\n┌────────────────────────────────────────────────────────┐');
+    console.log('│ 📬  [DEVELOPMENT EMAIL BYPASS]                        │');
+    console.log(`│ To: ${toEmail.padEnd(50)} │`);
+    console.log(`│ Name: ${name.padEnd(48)} │`);
+    console.log(`│ Verification Link:                                     │`);
+    console.log(`│ ${url.padEnd(54)} │`);
+    console.log('└────────────────────────────────────────────────────────┘\n');
+  }
+  
   const htmlContent = `
     <!DOCTYPE html>
     <html>
@@ -96,6 +106,15 @@ export const sendVerificationEmail = async (toEmail, name, token, clientUrl) => 
  * Send password reset email containing OTP.
  */
 export const sendOtpEmail = async (toEmail, name, otp) => {
+  if (process.env.NODE_ENV === 'development' || !process.env.BREVO_API_KEY) {
+    console.log('\n┌────────────────────────────────────────────────────────┐');
+    console.log('│ 📬  [DEVELOPMENT EMAIL BYPASS]                        │');
+    console.log(`│ To: ${toEmail.padEnd(50)} │`);
+    console.log(`│ Name: ${name.padEnd(48)} │`);
+    console.log(`│ Password Reset OTP: ${otp.padEnd(35)} │`);
+    console.log('└────────────────────────────────────────────────────────┘\n');
+  }
+
   const htmlContent = `
     <!DOCTYPE html>
     <html>

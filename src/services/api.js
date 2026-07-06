@@ -1,7 +1,12 @@
 import axios from 'axios';
 
 // Base URL points to our Express Node.js server
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const getApiUrl = () => {
+  const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  return isLocal ? 'http://localhost:5000/api' : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
+};
+
+const API_URL = getApiUrl();
 
 const api = axios.create({
   baseURL: API_URL,
