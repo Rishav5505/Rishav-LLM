@@ -2,9 +2,9 @@ import Chat from '../models/Chat.js';
 import Document from '../models/Document.js';
 import Message from '../models/Message.js';
 import { extractTextFromPdf, chunkText, searchDocumentChunks } from '../services/pdfService.js';
-import { generateChatResponse } from '../services/geminiService.js';
+import { generateChatResponse, extractTextWithGemini } from '../services/geminiService.js';
 
-// @desc    Upload PDF, extract text, chunk and store in database
+// @desc    Upload document, extract text based on mime type, chunk and store in database
 // @route   POST /api/pdf/upload
 // @access  Private
 export const uploadPdfDocument = async (req, res) => {
@@ -16,7 +16,7 @@ export const uploadPdfDocument = async (req, res) => {
     }
 
     if (!req.file) {
-      return res.status(400).json({ success: false, message: 'Please upload a PDF file' });
+      return res.status(400).json({ success: false, message: 'Please upload a file' });
     }
 
     // 1. Verify chat exists
@@ -25,14 +25,52 @@ export const uploadPdfDocument = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Chat session not found' });
     }
 
-    // 2. Extract text from PDF buffer
-    console.log(`Parsing PDF: ${req.file.originalname} (${req.file.size} bytes)...`);
-    const extractedText = await extractTextFromPdf(req.file.buffer);
+    // 2. Extract text from buffer based on MIME type
+    console.log(`Processing file: ${req.file.originalname} (${req.file.mimetype}, ${req.file.size} bytes)...`);
+    let extractedText = '';
+    let docTypeDisplay = 'Document';
+
+    const mime = req.file.mimetype;
+
+    if (mime === 'application/pdf') {
+      extractedText = await extractTextFromPdf(req.file.buffer);
+      docTypeDisplay = 'PDF Document';
+    } else if (mime.startsWith('text/')) {
+      extractedText = req.file.buffer.toString('utf-8');
+      docTypeDisplay = 'Text File';
+    } else if (mime.startsWith('image/')) {
+      docTypeDisplay = 'Image File';
+      extractedText = await extractTextWithGemini(
+        req.file.buffer,
+        mime,
+        "Perform OCR on this image. Extract all text, labels, numbers, and contents verbatim as plain text. Do not write any commentary or descriptions, just the text."
+      );
+    } else if (mime.startsWith('audio/')) {
+      docTypeDisplay = 'Audio Transcription';
+      extractedText = await extractTextWithGemini(
+        req.file.buffer,
+        mime,
+        "Transcribe this audio file completely. Extract all spoken words as text. Do not add any headers, annotations, or metadata, just the spoken text."
+      );
+    } else if (
+      mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
+      mime === 'application/msword'
+    ) {
+      docTypeDisplay = 'Word Document';
+      extractedText = await extractTextWithGemini(
+        req.file.buffer,
+        mime,
+        "Extract all plain text contents from this document. Do not add any introduction or notes, just return the text found."
+      );
+    } else {
+      // Fallback to text encoding
+      extractedText = req.file.buffer.toString('utf-8');
+    }
     
     if (!extractedText || extractedText.trim() === '') {
       return res.status(400).json({ 
         success: false, 
-        message: 'Could not extract text from the PDF. The document might be empty or image-only scanned.' 
+        message: `Could not extract text from the file (${req.file.originalname}). The file might be empty, corrupted, or unsupported.` 
       });
     }
 
@@ -55,7 +93,7 @@ export const uploadPdfDocument = async (req, res) => {
       userId: req.user._id,
       chatId: chat._id,
       role: 'assistant',
-      content: `📁 **Uploaded Document:** *${req.file.originalname}* (${Math.round(req.file.size / 1024)} KB). I have processed it and you can now ask questions about its content!`,
+      content: `📁 **Uploaded ${docTypeDisplay}:** *${req.file.originalname}* (${Math.round(req.file.size / 1024)} KB). I have processed it and you can now ask questions about its content!`,
     });
 
     res.status(201).json({

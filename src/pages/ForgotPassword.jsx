@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, Mail, Lock, KeyRound, ArrowLeft, ArrowRight, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { authAPI } from '../services/api';
+import CursorGlow from '../components/CursorGlow';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -65,6 +66,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="relative min-h-screen bg-dark-bg text-gray-200 flex items-center justify-center px-4 overflow-hidden select-none">
+      <CursorGlow />
       {/* Background gradients */}
       <div className="absolute top-[-20%] left-[-20%] w-[65%] h-[65%] bg-brand-purple/10 blur-[130px] pointer-events-none animate-aura-1" />
       <div className="absolute bottom-[-20%] right-[-20%] w-[65%] h-[65%] bg-indigo-950/25 blur-[130px] pointer-events-none animate-aura-2" />

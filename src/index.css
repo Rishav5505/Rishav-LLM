@@ -291,3 +291,26 @@ body {
 .prose-custom li {
   margin-bottom: 0.25rem;
 }
+
+/* Interactive Cursor Glow styles */
+.cursor-glow-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.cursor-glow-orb {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(156, 21, 141, 0.12) 0%, rgba(59, 130, 246, 0.06) 50%, transparent 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  pointer-events: none;
+  filter: blur(80px);
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+

@@ -4,6 +4,7 @@ import { Sparkles, Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 }
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import CursorGlow from '../components/CursorGlow';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -77,6 +78,7 @@ const Login = () => {
 
   return (
     <div className="relative min-h-screen bg-dark-bg text-gray-200 flex items-center justify-center px-4 overflow-hidden">
+      <CursorGlow />
       
       {/* Siri-Style Morphing Aura Backgrounds */}
       <div className="absolute top-[-20%] left-[-20%] w-[65%] h-[65%] bg-brand-purple/10 blur-[130px] pointer-events-none animate-aura-1" />

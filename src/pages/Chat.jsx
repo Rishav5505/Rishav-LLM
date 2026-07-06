@@ -2,29 +2,96 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Send, Mic, MicOff, ArrowLeft, Paperclip, 
-  HelpCircle, Sparkles, PanelRightOpen, PanelRightClose,
-  Wand2, Loader2, Volume2, VolumeX
+  HelpCircle, Sparkles, Wand2, Loader2, Volume2, VolumeX,
+  AlertCircle, FileText, Image, Music
 } from 'lucide-react';
 import { useChat } from '../context/ChatContext';
 import { chatAPI } from '../services/api';
 import ChatBubble from '../components/ChatBubble';
-import PDFUploader from '../components/PDFUploader';
 
 const Chat = () => {
   const { id } = useParams();
   const { 
     currentChat, messages, loadChatDetails, postMessage, 
-    messagesLoading, selectedModel 
+    messagesLoading, selectedModel, uploadPdfFile, documents 
   } = useChat();
 
   const [inputText, setInputText] = useState('');
   const [isListening, setIsListening] = useState(false);
-  const [showPdfPanel, setShowPdfPanel] = useState(true);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('soundEnabled') !== 'false');
+  const [isFocused, setIsFocused] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
   
   const scrollRef = useRef(null);
   const recognitionRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const getFileIconAndColor = (filename) => {
+    const ext = filename.split('.').pop().toLowerCase();
+    if (ext === 'pdf') {
+      return { Icon: FileText, iconColor: 'text-red-400', bgColor: 'bg-red-950/15', borderColor: 'border-red-500/25' };
+    }
+    if (['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(ext)) {
+      return { Icon: Image, iconColor: 'text-purple-400', bgColor: 'bg-purple-950/15', borderColor: 'border-purple-500/25' };
+    }
+    if (['mp3', 'wav', 'ogg', 'm4a'].includes(ext)) {
+      return { Icon: Music, iconColor: 'text-emerald-400', bgColor: 'bg-emerald-950/15', borderColor: 'border-emerald-500/25' };
+    }
+    if (['docx', 'doc'].includes(ext)) {
+      return { Icon: FileText, iconColor: 'text-blue-400', bgColor: 'bg-blue-950/15', borderColor: 'border-blue-500/25' };
+    }
+    return { Icon: FileText, iconColor: 'text-gray-400', bgColor: 'bg-gray-800/15', borderColor: 'border-gray-700/25' };
+  };
+
+  const handlePdfUploadClick = () => {
+    playSound('click');
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handlePdfUpload = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile || !currentChat) return;
+
+    const allowedExtensions = /\.(pdf|docx|doc|txt|csv|md|html|css|png|jpg|jpeg|webp|mp3|wav|ogg|m4a)$/i;
+    if (
+      !allowedExtensions.test(selectedFile.name) && 
+      !selectedFile.type.startsWith('image/') && 
+      !selectedFile.type.startsWith('audio/')
+    ) {
+      setUploadError('Unsupported format. Upload PDF, Word, Text, Image, or Audio.');
+      setTimeout(() => setUploadError(''), 4000);
+      return;
+    }
+
+    if (selectedFile.size > 10 * 1024 * 1024) {
+      setUploadError('File size exceeds 10MB limit.');
+      setTimeout(() => setUploadError(''), 4000);
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError('');
+    try {
+      const result = await uploadPdfFile(selectedFile);
+      if (result && result.success) {
+        playSound('success');
+      } else {
+        setUploadError(result?.message || 'Failed to upload file.');
+        setTimeout(() => setUploadError(''), 4000);
+      }
+    } catch (err) {
+      console.error(err);
+      setUploadError('An unexpected error occurred.');
+      setTimeout(() => setUploadError(''), 4000);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   // Sound effects generator utilizing Web Audio API (cross-browser compatible)
   const playSound = (type) => {
@@ -293,16 +360,63 @@ const Chat = () => {
                 </div>
               )}
 
-              <div className="relative flex items-end w-full border border-dark-border rounded-2xl bg-dark-surface glow-border-active transition-colors p-2 shadow-2xl">
+              {/* Attached PDF/Word/Image/Audio Chips & Progress Indicators */}
+              {((documents && documents.length > 0) || isUploading || uploadError) && (
+                <div className="flex flex-wrap gap-2 mb-3 px-1 animate-message">
+                  {documents.map((doc) => {
+                    const { Icon, iconColor, bgColor, borderColor } = getFileIconAndColor(doc.originalName);
+                    return (
+                      <div
+                        key={doc._id}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-gray-300 text-xs font-semibold select-none shadow-sm ${bgColor} ${borderColor}`}
+                      >
+                        <Icon size={12} className={iconColor} />
+                        <span className="max-w-[130px] truncate">{doc.originalName}</span>
+                        <span className="text-[9px] text-gray-500">({Math.round(doc.textLength / 1000)}k chars)</span>
+                      </div>
+                    );
+                  })}
+                  
+                  {isUploading && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-purple/10 border border-brand-purple/20 text-brand-purple-light text-xs font-semibold animate-pulse">
+                      <Loader2 size={12} className="animate-spin" />
+                      <span>Processing file...</span>
+                    </div>
+                  )}
+
+                  {uploadError && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-950/20 border border-red-500/30 text-red-400 text-xs font-semibold animate-bounce">
+                      <AlertCircle size={12} />
+                      <span>{uploadError}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className={`relative flex items-end w-full border rounded-2xl bg-dark-surface transition-all p-2 shadow-2xl ${
+                isFocused 
+                  ? 'border-brand-purple-light/60 shadow-[0_0_20px_rgba(156,21,141,0.2)] ring-1 ring-brand-purple-light/10' 
+                  : 'border-dark-border'
+              }`}>
                 
-                {/* PDF toggle side-drawer button (mobile) */}
+                {/* Hidden input for multiple file formats */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handlePdfUpload}
+                  accept=".pdf,.docx,.doc,.txt,.csv,.md,.html,.css,image/*,audio/*"
+                  className="hidden"
+                />
+
+                {/* File uploader button */}
                 <button
                   type="button"
-                  onClick={() => { playSound('click'); setShowPdfPanel(!showPdfPanel); }}
+                  onClick={handlePdfUploadClick}
+                  disabled={isUploading}
                   className={`p-2 rounded-xl text-gray-400 hover:text-white hover:bg-dark-hover transition-all cursor-pointer ${
-                    showPdfPanel ? 'text-brand-purple-light bg-brand-purple/5' : ''
+                    isUploading ? 'text-brand-purple-light bg-brand-purple/5' : ''
                   }`}
-                  title="PDF Document Context"
+                  title="Upload Context File (PDF, DOCX, Image, Audio, Text)"
                 >
                   <Paperclip size={18} />
                 </button>
@@ -312,9 +426,12 @@ const Chat = () => {
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={`Ask Rishav AI (${selectedModel})...`}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  placeholder={isUploading ? "Uploading PDF, please wait..." : `Ask Rishav AI (${selectedModel})...`}
                   rows={1}
-                  className="flex-1 max-h-36 min-h-[36px] bg-transparent text-sm md:text-base border-none outline-none text-white py-2 px-3 resize-none focus:ring-0 focus:outline-none placeholder:text-gray-600 focus:shadow-[0_0_15px_rgba(116,9,104,0.15)] rounded-lg"
+                  disabled={isUploading}
+                  className="flex-1 max-h-36 min-h-[36px] bg-transparent text-sm md:text-base border-none outline-none text-white py-2 px-3 resize-none focus:ring-0 focus:outline-none placeholder:text-gray-600 rounded-lg disabled:opacity-50"
                   style={{ height: 'auto' }}
                 />
 
@@ -385,24 +502,6 @@ const Chat = () => {
 
         </div>
 
-        {/* Collapsible right sidebar for PDF Uploader */}
-        {showPdfPanel && (
-          <aside className="w-80 shrink-0 border-l border-dark-border bg-dark-sidebar/95 p-4 hidden lg:block overflow-y-auto">
-            <PDFUploader />
-          </aside>
-        )}
-      </div>
-      
-      {/* Floating Toggle PDF panel for smaller devices */}
-      {showPdfPanel && (
-        <div className="fixed inset-0 z-20 bg-black/60 lg:hidden" onClick={() => setShowPdfPanel(false)} />
-      )}
-      <div
-        className={`fixed top-16 bottom-0 right-0 z-30 w-80 bg-dark-sidebar border-l border-dark-border p-4 overflow-y-auto transition-transform duration-300 lg:hidden ${
-          showPdfPanel ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <PDFUploader />
       </div>
 
     </div>

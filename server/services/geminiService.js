@@ -80,3 +80,35 @@ Where {URL_ENCODED_PROMPT} is a descriptive prompt in English detailing what to 
     }
   }
 };
+
+/**
+ * Extract text from media (image, audio, docx, etc.) using Gemini
+ * @param {Buffer} buffer - File buffer
+ * @param {string} mimeType - File mimetype
+ * @param {string} prompt - Instruction for extraction
+ * @returns {Promise<string>} - Extracted text / transcript
+ */
+export const extractTextWithGemini = async (buffer, mimeType, prompt) => {
+  try {
+    const genAI = getGenAIClient();
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    const filePart = {
+      inlineData: {
+        data: buffer.toString('base64'),
+        mimeType: mimeType
+      }
+    };
+
+    const result = await model.generateContent([
+      filePart,
+      prompt
+    ]);
+
+    const response = await result.response;
+    return response.text() || '';
+  } catch (error) {
+    console.error('Gemini file processing error:', error);
+    throw new Error(`Rishav AI failed to extract file content: ${error.message}`);
+  }
+};

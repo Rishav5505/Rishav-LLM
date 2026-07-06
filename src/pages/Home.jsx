@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { Sparkles, MessageSquare, BrainCircuit, FileDown, Cpu, Wand2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import CursorGlow from '../components/CursorGlow';
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
@@ -12,6 +13,7 @@ const Home = () => {
 
   return (
     <div className="relative min-h-screen bg-dark-bg text-gray-200 overflow-hidden flex flex-col justify-between">
+      <CursorGlow />
       
       {/* Siri-Style Morphing Aura Backgrounds */}
       <div className="absolute top-[-20%] left-[-20%] w-[65%] h-[65%] bg-brand-purple/10 blur-[130px] pointer-events-none animate-aura-1" />
