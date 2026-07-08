@@ -495,7 +495,7 @@ const Chat = () => {
               </div>
 
               <div className="text-[10px] text-center text-gray-500 mt-2">
-                Shift + Enter for new lines. Responses generated using Google Gemini AI.
+                Shift + Enter for new lines. Powered by Rishav AI Multi-model system (Gemini, ChatGPT, Claude, Llama, Qwen).
               </div>
             </form>
           </div>

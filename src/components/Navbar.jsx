@@ -1,6 +1,63 @@
 import React, { useState } from 'react';
-import { Menu, FileDown, Trash2, Cpu, Sparkles, Sliders } from 'lucide-react';
+import { Menu, FileDown, Trash2, Cpu, Sparkles, Sliders, ChevronDown } from 'lucide-react';
 import { useChat } from '../context/ChatContext';
+
+const modelsList = [
+  {
+    id: 'gemini-2.5-flash',
+    name: 'Gemini 2.5 Flash',
+    provider: 'Google',
+    desc: 'Default - Ultra-fast & Multimodal',
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-400/10',
+    borderColor: 'border-blue-400/20'
+  },
+  {
+    id: 'gemini-2.5-pro',
+    name: 'Gemini 2.5 Pro',
+    provider: 'Google',
+    desc: 'Advanced Reasoning & Analysis',
+    color: 'text-indigo-400',
+    bgColor: 'bg-indigo-400/10',
+    borderColor: 'border-indigo-400/20'
+  },
+  {
+    id: 'gpt-4o-mini',
+    name: 'GPT-4o Mini',
+    provider: 'OpenAI',
+    desc: 'ChatGPT - Smart & Concise',
+    color: 'text-emerald-400',
+    bgColor: 'bg-emerald-400/10',
+    borderColor: 'border-emerald-400/20'
+  },
+  {
+    id: 'claude-3-5-sonnet',
+    name: 'Claude 3.5 Sonnet',
+    provider: 'Anthropic',
+    desc: 'Claude - Master of Coding & Writing',
+    color: 'text-amber-500',
+    bgColor: 'bg-amber-500/10',
+    borderColor: 'border-amber-500/20'
+  },
+  {
+    id: 'llama-3.1-8b',
+    name: 'Llama 3.1 8B',
+    provider: 'Meta',
+    desc: 'High-speed Open Source (Free)',
+    color: 'text-purple-400',
+    bgColor: 'bg-purple-400/10',
+    borderColor: 'border-purple-400/20'
+  },
+  {
+    id: 'qwen-2.5-coder',
+    name: 'Qwen 2.5 Coder',
+    provider: 'Alibaba',
+    desc: 'Expert Code Generation (Free)',
+    color: 'text-teal-400',
+    bgColor: 'bg-teal-400/10',
+    borderColor: 'border-teal-400/20'
+  }
+];
 
 const Navbar = ({ toggleSidebar }) => {
   const { 
@@ -9,6 +66,7 @@ const Navbar = ({ toggleSidebar }) => {
   } = useChat();
 
   const [showSettings, setShowSettings] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleClearChat = async () => {
     if (!currentChat) return;
@@ -146,21 +204,73 @@ const Navbar = ({ toggleSidebar }) => {
             System Online
           </div>
 
-          {/* Model Selection Dropdown */}
-          <div className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-xl px-2.5 py-1.5 text-xs text-gray-300">
-            <Cpu size={14} className="text-brand-purple-light" />
-            <select
-              value={selectedModel}
-              onChange={(e) => changeSelectedModel(e.target.value)}
-              className="bg-transparent border-none text-white focus:outline-none cursor-pointer font-medium pr-1"
+          {/* Custom Model Selector */}
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center gap-2 bg-dark-surface hover:bg-dark-hover border border-dark-border rounded-xl px-3 py-1.5 text-xs text-gray-300 transition-all cursor-pointer select-none active:scale-95"
+              title="Select LLM Model"
             >
-              <option value="gemini-2.5-flash" className="bg-dark-surface text-white">
-                gemini-2.5-flash
-              </option>
-              <option value="gemini-2.5-pro" className="bg-dark-surface text-white">
-                gemini-2.5-pro
-              </option>
-            </select>
+              {(() => {
+                const activeModel = modelsList.find(m => m.id === selectedModel) || modelsList[0];
+                const Icon = activeModel.id.startsWith('gemini-') ? Sparkles : Cpu;
+                return (
+                  <>
+                    <Icon size={14} className={activeModel.color} />
+                    <span className="font-semibold text-white">{activeModel.name}</span>
+                  </>
+                );
+              })()}
+              <ChevronDown size={12} className="text-gray-500" />
+            </button>
+
+            {isDropdownOpen && (
+              <>
+                <div 
+                  className="fixed inset-0 z-45" 
+                  onClick={() => setIsDropdownOpen(false)} 
+                />
+                <div className="absolute top-full right-0 mt-2 w-80 bg-dark-sidebar border border-dark-border rounded-2xl p-2 shadow-2xl z-50 animate-message">
+                  <div className="px-3 py-2 border-b border-dark-border mb-1 text-[10px] uppercase font-bold tracking-wider text-gray-500">
+                    Select AI Model
+                  </div>
+                  <div className="max-h-96 overflow-y-auto space-y-1">
+                    {modelsList.map((model) => {
+                      const isSelected = model.id === selectedModel;
+                      const Icon = model.id.startsWith('gemini-') ? Sparkles : Cpu;
+                      return (
+                        <button
+                          key={model.id}
+                          type="button"
+                          onClick={() => {
+                            changeSelectedModel(model.id);
+                            setIsDropdownOpen(false);
+                          }}
+                          className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left cursor-pointer hover:bg-dark-surface ${
+                            isSelected 
+                              ? 'bg-dark-surface border border-dark-border shadow-sm' 
+                              : 'border border-transparent'
+                          }`}
+                        >
+                          <div className={`p-2 rounded-xl mt-0.5 shrink-0 ${model.bgColor} ${model.borderColor}`}>
+                            <Icon size={14} className={model.color} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-xs font-bold text-white truncate">{model.name}</span>
+                              <span className="text-[9px] font-bold text-gray-500 bg-dark-bg/60 border border-dark-border/40 rounded px-1.5 py-0.5 uppercase shrink-0">
+                                {model.provider}
+                              </span>
+                            </div>
+                            <p className="text-[10px] text-gray-400 mt-0.5 leading-normal">{model.desc}</p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Model Settings Panel Toggle */}

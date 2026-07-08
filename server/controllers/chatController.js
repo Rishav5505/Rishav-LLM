@@ -2,7 +2,7 @@ import Chat from '../models/Chat.js';
 import Message from '../models/Message.js';
 import Document from '../models/Document.js';
 import Setting from '../models/Setting.js';
-import { generateChatResponse } from '../services/geminiService.js';
+import { generateChatResponse } from '../services/llmService.js';
 import { searchDocumentChunks } from '../services/pdfService.js';
 
 // Default system instruction fallback

@@ -2,7 +2,7 @@ import Chat from '../models/Chat.js';
 import Document from '../models/Document.js';
 import Message from '../models/Message.js';
 import { extractTextFromPdf, chunkText, searchDocumentChunks } from '../services/pdfService.js';
-import { generateChatResponse, extractTextWithGemini } from '../services/geminiService.js';
+import { generateChatResponse, extractTextWithGemini } from '../services/llmService.js';
 
 // @desc    Upload document, extract text based on mime type, chunk and store in database
 // @route   POST /api/pdf/upload
